@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "*.ejs": "html",
+        "unordered_map": "cpp",
+        "thread": "cpp",
+        "ostream": "cpp",
+        "iostream": "cpp",
+        "*.tcc": "cpp",
+        "bitset": "cpp",
+        "optional": "cpp",
+        "algorithm": "cpp",
+        "random": "cpp",
+        "istream": "cpp",
+        "numeric": "cpp",
+        "streambuf": "cpp",
+        "regex": "cpp",
+        "valarray": "cpp"
+    }
+}

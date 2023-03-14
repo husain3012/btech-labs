@@ -1,298 +1,190 @@
-// C program to calculate the First and
-// Follow sets of a given grammar
-#include<stdio.h>
-#include<ctype.h>
-#include<string.h>
+#include<iostream>
+#include<vector>
+#include<string>
+#include<unordered_map>
+#include<unordered_set>
+#include<fstream>
+using namespace std;
 
-// Functions to calculate Follow
-void followfirst(char, int, int);
-void follow(char c);
+#define epsilon '#'
+#define endMarker '$'
 
-// Function to calculate First
-void findfirst(char, int, int);
 
-int count, n = 0;
+vector<string> split(string, char );
 
-// Stores the final result
-// of the First Sets
-char calc_first[10][100];
-
-// Stores the final result
-// of the Follow Sets
-char calc_follow[10][100];
-int m = 0;
-
-// Stores the production rules
-char production[10][10];
-char f[10], first[10];
-int k;
-char ck;
-int e;
-
-int main(int argc, char **argv)
+class Grammar
 {
-	int jm = 0;
-	int km = 0;
-	int i, choice;
-	char c, ch;
-	count = 8;
+	unordered_map<char, vector<string>> rules;
+	char startSymbol;
+	unordered_set<char> grammarSymbols;
 	
-	// The Input grammar
-	strcpy(production[0], "S=BAZ");
-	strcpy(production[1], "Z=bAZ");
-	strcpy(production[2], "Z=#");
-	strcpy(production[3], "B=bB");
-	strcpy(production[4], "B=t");
-	strcpy(production[5], "A=aX");
-	strcpy(production[6], "X=A");
-	strcpy(production[7], "X=b");
-    
 
-    // strcpy(production[0], "S=BAZ");
-	// strcpy(production[1], "Z=bAZ");
-	// strcpy(production[2], "Z=#");
-	// strcpy(production[3], "B=bB");
-	// strcpy(production[4], "B=t");
-	// strcpy(production[5], "A=aX");
-	// strcpy(production[6], "X=A");
-	// strcpy(production[7], "X=b");
-	
-	int kay;
-	char done[count];
-	int ptr = -1;
-	
-	// Initializing the calc_first array
-	for(k = 0; k < count; k++) {
-		for(kay = 0; kay < 100; kay++) {
-			calc_first[k][kay] = '!';
+	void first_helper(char symbol, unordered_set<char> &setOfFirsts){
+		if(symbol == epsilon or islower(symbol)){
+			setOfFirsts.insert(symbol);
+			return;
 		}
-	}
-	int point1 = 0, point2, xxx;
-	
-	for(k = 0; k < count; k++)
-	{
-		c = production[k][0];
-		point2 = 0;
-		xxx = 0;
-		
-		// Checking if First of c has
-		// already been calculated
-		for(kay = 0; kay <= ptr; kay++)
-			if(c == done[kay])
-				xxx = 1;
-				
-		if (xxx == 1)
-			continue;
-		
-		// Function call
-		findfirst(c, 0, 0);
-		ptr += 1;
-		
-		// Adding c to the calculated list
-		done[ptr] = c;
-		printf("\n First(%c) = { ", c);
-		calc_first[point1][point2++] = c;
-		
-		// Printing the First Sets of the grammar
-		for(i = 0 + jm; i < n; i++) {
-			int lark = 0, chk = 0;
+		for(auto productions : rules[symbol]){
 			
-			for(lark = 0; lark < point2; lark++) {
-				
-				if (first[i] == calc_first[point1][lark])
-				{
-					chk = 1;
-					break;
-				}
-			}
-			if(chk == 0)
-			{
-				printf("%c, ", first[i]);
-				calc_first[point1][point2++] = first[i];
-			}
+				first_helper(productions[0], setOfFirsts);
+			
 		}
-		printf("}\n");
-		jm = n;
-		point1++;
 	}
-	printf("\n");
-	printf("-----------------------------------------------\n\n");
-	char donee[count];
-	ptr = -1;
+	public:
+	Grammar(){
+		startSymbol = '\0';
+	}
+	void read(string file_name){
+	ifstream file;
+	string line;
+	file.open(file_name);
 	
-	// Initializing the calc_follow array
-	for(k = 0; k < count; k++) {
-		for(kay = 0; kay < 100; kay++) {
-			calc_follow[k][kay] = '!';
+	while(getline(file, line)){
+		
+		char leftSymbol = line[0];
+		if(startSymbol=='\0'){
+			startSymbol=leftSymbol;
 		}
+		string rightSymbols = "";
+		for(int i = 1;i<line.length();i++){
+			rightSymbols += line[i];
+		}
+		rules[leftSymbol].push_back(rightSymbols);
 	}
-	point1 = 0;
-	int land = 0;
-	for(e = 0; e < count; e++)
-	{
-		ck = production[e][0];
-		point2 = 0;
-		xxx = 0;
-		
-		// Checking if Follow of ck
-		// has already been calculated
-		for(kay = 0; kay <= ptr; kay++)
-			if(ck == donee[kay])
-				xxx = 1;
-				
-		if (xxx == 1)
-			continue;
-		land += 1;
-		
-		// Function call
-		follow(ck);
-		ptr += 1;
-		
-		// Adding ck to the calculated list
-		donee[ptr] = ck;
-		printf(" Follow(%c) = { ", ck);
-		calc_follow[point1][point2++] = ck;
-		
-		// Printing the Follow Sets of the grammar
-		for(i = 0 + km; i < m; i++) {
-			int lark = 0, chk = 0;
-			for(lark = 0; lark < point2; lark++)
-			{
-				if (f[i] == calc_follow[point1][lark])
-				{
-					chk = 1;
-					break;
+
+	}
+
+
+	void print(){
+		cout<<endl;
+		for(auto rule : rules){
+			cout<<rule.first<<" -> ";
+			for(int i = 0; i<rule.second.size();i++){
+				cout<<rule.second[i];
+				if(i<rule.second.size()-1){
+					cout<<" | ";
 				}
 			}
-			if(chk == 0)
-			{
-				printf("%c, ", f[i]);
-				calc_follow[point1][point2++] = f[i];
+			cout<<endl;
+		}
+		
+	}
+
+	vector<char> first(char symbol){
+		unordered_set<char> setOfFirsts;
+		first_helper(symbol, setOfFirsts);
+		vector<char> firsts;
+		for(char c : setOfFirsts){
+			firsts.push_back(c);
+		}
+		return firsts;
+	}
+
+
+
+	vector<char> follow(char symbol, char last_symbol = '\0'){
+		
+		unordered_set<char> setOfFollows;
+		if(symbol!=last_symbol){
+			if(symbol==startSymbol){
+			setOfFollows.insert(endMarker);
+		}
+		for(auto rule : rules){
+			vector<string> productions = rule.second;
+			for(string prod : productions){
+				
+				for(int i = 0;i<prod.length();i++){
+					char c = prod[i];
+					if(c==symbol){
+					// easy follow case
+					if(i<prod.size()-1){
+						vector<char> nextFirsts = first(prod[i+1]);
+						for(char f : nextFirsts){
+							if(f!=epsilon)
+							setOfFollows.insert(f);
+						}
+					}
+					// case where symbol is last
+					if(i==prod.size()-1){
+						vector<char> parentFollows = follow(rule.first, symbol);
+
+					}
+				}
+				}
+			
 			}
 		}
-		printf(" }\n\n");
-		km = m;
-		point1++;
+			
+		}
+		
+		vector<char> follows;
+		for(auto follow : setOfFollows){
+			follows.push_back(follow);
+		}
+		return follows;
 	}
+
+	void printAllFirsts(){
+
+		for(auto rule : rules){
+			char symbol = rule.first;
+			vector<char> firsts = first(symbol);
+			cout<<"FIRST("<<symbol<<") = ";
+			for(char c : firsts){
+				cout<<c<<", ";
+			}
+			cout<<"\n";
+		}
+	}
+
+	void printAllFollows(){
+		for(auto rule : rules){
+			char symbol = rule.first;
+			vector<char> firsts = follow(symbol);
+			cout<<"FOLLOW("<<symbol<<") = ";
+			for(char c : firsts){
+				cout<<c<<", ";
+			}
+			cout<<"\n";
+		}
+	}
+
+
+};
+
+int main(){
+	Grammar grammar;
+	grammar.read("grammar.txt");
+	grammar.print();
+
+	cout<<"\n\nFirsts:\n\n";
+	// grammar.first('A');
+	grammar.printAllFirsts();
+	cout<<"\n\nFollows:\n\n";
+	grammar.printAllFollows();
+	
+
+
 }
 
-void follow(char c)
-{
-	int i, j;
-	
-	// Adding "$" to the follow
-	// set of the start symbol
-	if(production[0][0] == c) {
-		f[m++] = '$';
-	}
-	for(i = 0; i < 10; i++)
-	{
-		for(j = 2;j < 10; j++)
-		{
-			if(production[i][j] == c)
-			{
-				if(production[i][j+1] != '\0')
-				{
-					// Calculate the first of the next
-					// Non-Terminal in the production
-					followfirst(production[i][j+1], i, (j+2));
-				}
-				
-				if(production[i][j+1]=='\0' && c!=production[i][0])
-				{
-					// Calculate the follow of the Non-Terminal
-					// in the L.H.S. of the production
-					follow(production[i][0]);
-				}
-			}
-		}
-	}
-}
 
-void findfirst(char c, int q1, int q2)
-{
-	int j;
-	
-	// The case where we
-	// encounter a Terminal
-	if(!(isupper(c))) {
-		first[n++] = c;
-	}
-	for(j = 0; j < count; j++)
-	{
-		if(production[j][0] == c)
-		{
-			if(production[j][2] == '#')
-			{
-				if(production[q1][q2] == '\0')
-					first[n++] = '#';
-				else if(production[q1][q2] != '\0'
-						&& (q1 != 0 || q2 != 0))
-				{
-					// Recursion to calculate First of New
-					// Non-Terminal we encounter after epsilon
-					findfirst(production[q1][q2], q1, (q2+1));
-				}
-				else
-					first[n++] = '#';
-			}
-			else if(!isupper(production[j][2]))
-			{
-				first[n++] = production[j][2];
-			}
-			else
-			{
-				// Recursion to calculate First of
-				// New Non-Terminal we encounter
-				// at the beginning
-				findfirst(production[j][2], j, 3);
-			}
-		}
-	}
-}
 
-void followfirst(char c, int c1, int c2)
+vector<string> split(string s, char delem = ' ')
 {
-	int k;
-	
-	// The case where we encounter
-	// a Terminal
-	if(!(isupper(c)))
-		f[m++] = c;
-	else
-	{
-		int i = 0, j = 1;
-		for(i = 0; i < count; i++)
-		{
-			if(calc_first[i][0] == c)
-				break;
-		}
-		
-		//Including the First set of the
-		// Non-Terminal in the Follow of
-		// the original query
-		while(calc_first[i][j] != '!')
-		{
-			if(calc_first[i][j] != '#')
-			{
-				f[m++] = calc_first[i][j];
-			}
-			else
-			{
-				if(production[c1][c2] == '\0')
-				{
-					// Case where we reach the
-					// end of a production
-					follow(production[c1][0]);
-				}
-				else
-				{
-					// Recursion to the next symbol
-					// in case we encounter a "#"
-					followfirst(production[c1][c2], c1, c2+1);
-				}
-			}
-			j++;
-		}
-	}
+    vector<string> tokenized;
+    string temp = "";
+    for (char x : s)
+    {
+        if (x == delem)
+        {
+            tokenized.push_back(temp);
+            temp = "";
+        }
+        else
+        {
+            temp += x;
+        }
+    }
+    tokenized.push_back(temp);
+    return tokenized;
 }

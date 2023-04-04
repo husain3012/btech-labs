@@ -29,27 +29,6 @@ vector<string> split(string s, char delem = ' ')
 
 class First_and_Follow
 {
-    unordered_map<char, vector<string>> productions;
-    unordered_set<char> terminals;
-    unordered_set<char> nonTerminals;
-
-    char startSymbol;
-
-    bool isTerminal(char c)
-    {
-        return !isupper(c);
-    }
-    bool hasNullProduction(char c)
-    {
-        if (isTerminal(c))
-            return false;
-        for (string production : productions[c])
-        {
-            if (production[0] == epsilon)
-                return true;
-        }
-        return false;
-    }
 
     string removeInterEpsilon(string str)
     {
@@ -174,6 +153,29 @@ class First_and_Follow
                 filtered_follow += c;
         }
         return uniq(filtered_follow);
+    }
+
+protected:
+    unordered_map<char, vector<string>> productions;
+    unordered_set<char> terminals;
+    unordered_set<char> nonTerminals;
+
+    char startSymbol;
+
+    bool isTerminal(char c)
+    {
+        return !isupper(c);
+    }
+    bool hasNullProduction(char c)
+    {
+        if (isTerminal(c))
+            return false;
+        for (string production : productions[c])
+        {
+            if (production[0] == epsilon)
+                return true;
+        }
+        return false;
     }
 
 public:
@@ -319,16 +321,3 @@ public:
         }
     }
 };
-
-int main()
-{
-    First_and_Follow fnf;
-    fnf.read();
-    fnf.printProductions();
-    cout << endl;
-
-    cout << "Firsts: \n";
-    fnf.allFirsts();
-    cout << "\n\nFollows: \n";
-    fnf.allFollows();
-}

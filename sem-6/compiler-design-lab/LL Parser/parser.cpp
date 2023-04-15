@@ -2,13 +2,13 @@
 #include "./first-and-follow.hpp"
 using namespace std;
 
-class LL_Parser : public First_and_Follow
+class LL_Input : public First_and_Follow
 {
 
     unordered_map<char, unordered_map<char, string>> parsing_table;
 
 public:
-    LL_Parser() : First_and_Follow()
+    LL_Input() : First_and_Follow()
     {
     }
 
@@ -81,7 +81,7 @@ public:
 
                 if (parsing_table[c].find(t) == parsing_table[c].end())
                 {
-                    cout << " - ";
+                    cout << "-";
                 }
                 else
                 {
@@ -153,8 +153,11 @@ public:
 int main()
 {
 
-    LL_Parser parser;
+    LL_Input parser;
     parser.read();
+    cout<<"CFG:\n";
+    parser.printProductions();
+    cout<<"\nLL(1) Parsing Table:\n";
     parser.generateParseTable();
     parser.printTable();
     parser.writeToFile();

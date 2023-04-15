@@ -7,6 +7,9 @@ Read LL Parser from a file and take input from the user.
 
 using namespace std;
 
+#define epsilon '#'
+#define endSymbol '$'
+
 vector<string> tokenize(string s, char delem = ' ')
 {
     vector<string> tokenized;
@@ -30,14 +33,12 @@ vector<string> tokenize(string s, char delem = ' ')
     return tokenized;
 }
 
-class LL_Parser
+class LL_Input
 {
     vector<char> terminals;
     vector<char> nonTerminals;
     map<char, vector<string>> transitions;
-    char endSymbol;
-    char epsilon;
-
+ 
     string getTransitionFromTable(char nonTerminal, char terminal)
     {
 
@@ -51,10 +52,8 @@ class LL_Parser
     }
 
 public:
-    LL_Parser(char endSymbol = '$', char epsilon = '#')
+    LL_Input()
     {
-        this->endSymbol = endSymbol;
-        this->epsilon = epsilon;
     }
     void readFile()
     {
@@ -118,6 +117,8 @@ public:
         string st = "$";
         st.push_back(nonTerminals[0]);
 
+        cout<<"\nSTACK\t\tINPUT\t\tOPERATION\tTRANSITION\n";
+        cout<<"----------------------------------------------------------";
         while (i < input.length())
         {
 
@@ -176,7 +177,7 @@ public:
                         st.push_back(nextProd[j]);
                     }
                 }
-                cout << "\t" << top << "->" << nextProd;
+                cout << "\t\t" << top << "->" << nextProd;
             }
         }
         // handle endSymbol transition
@@ -195,7 +196,7 @@ public:
                 cout << "POP";
                 st.pop_back();
             }
-            cout << "\t" << top << "->" << nextProd;
+            cout << "\t\t" << top << "->" << nextProd;
         }
         cout << endl
              << st << endl;
@@ -206,7 +207,7 @@ public:
 
 int main()
 {
-    LL_Parser parser;
+    LL_Input parser;
     parser.readFile();
     parser.print();
     while (true)

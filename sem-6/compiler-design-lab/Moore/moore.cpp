@@ -4,23 +4,6 @@
 #include <algorithm>
 #include <string>
 using namespace std;
-int stringToInt(string line)
-{
-    int i = 0;
-    int num = 0;
-    while (line[i] != 0)
-    {
-        if (line[0] == '-')
-        {
-            return -1;
-        }
-        num *= 10;
-        num += (line[i] - '0');
-        i++;
-    }
-    return num;
-}
-
 vector<string> split(string s, char delem = ' ')
 {
     vector<string> tokenized;
@@ -63,7 +46,7 @@ public:
 
             if (initialState == -1)
             {
-                initialState = stringToInt(line);
+                initialState = stoi(line);
             }
 
             else
@@ -78,7 +61,7 @@ public:
                 pair<vector<int>, string> current_state;
                 for (int j = 0; j < temp.size() - 1; j++)
                 {
-                    current_state.first.push_back(stringToInt(temp[j]));
+                    current_state.first.push_back(stoi(temp[j]));
                 }
                 current_state.second = temp.back();
                 transition_table.push_back(current_state);

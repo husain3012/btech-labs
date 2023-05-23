@@ -4,22 +4,7 @@
 #include <algorithm>
 #include <string>
 using namespace std;
-int stringToInt(string line)
-{
-    int i = 0;
-    int num = 0;
-    while (line[i] != 0)
-    {
-        if (line[0] == '-')
-        {
-            return -1;
-        }
-        num *= 10;
-        num += (line[i] - '0');
-        i++;
-    }
-    return num;
-}
+
 vector<string> split(string s, char delem = ' ')
 {
     vector<string> tokenized;
@@ -57,7 +42,7 @@ public:
         {
             if (i == 0)
             {
-                initialState = stringToInt(line);
+                initialState = stoi(line);
             }
             else
             {
@@ -66,8 +51,8 @@ public:
                 int number_of_input_symbols = tokenized_line.size() / 2;
                 for (int j = 0; j < tokenized_line.size(); j += 2)
                 {
-                    int to_state = stringToInt(tokenized_line[j]);
-                    // cout<<"At state "<<i-1<<" and input "<<tokenized_line[j+1][0]<<" to "<<stringToInt(tokenized_line[j])<<endl;
+                    int to_state = stoi(tokenized_line[j]);
+                    // cout<<"At state "<<i-1<<" and input "<<tokenized_line[j+1][0]<<" to "<<stoi(tokenized_line[j])<<endl;
                     if (to_state == -1)
                     {
                         temp.push_back({-1, ""});

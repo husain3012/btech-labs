@@ -1,8 +1,3 @@
-/*
-Q. WAP to verify input against an LL(1) Parser.
-Read LL Parser from a file and take input from the user.
-*/
-
 #include <bits/stdc++.h>
 
 using namespace std;

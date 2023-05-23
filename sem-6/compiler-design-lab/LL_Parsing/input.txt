@@ -1,5 +1,6 @@
-( ) * + i n $ 
-L En - - - En - - 
-F (E) - - - i - - 
-T F - - - F - - 
-E T - - - T - - 
+( ) * + i $ 
+E TD - - - TD - 
+F (E) - - - i - 
+S - # *FS # - # 
+T FS - - - FS - 
+D - # - +TD - # 

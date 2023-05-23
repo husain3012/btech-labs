@@ -4,139 +4,134 @@
 #include <algorithm>
 #include <string>
 using namespace std;
-int stringToInt(string line)
+
+class DFA
 {
-    int i = 0;
-    int num = 0;
-    while (line[i] != 0)
-    {
-        if (line[0] == '-')
-        {
-            return -1;
-        }
-        num *= 10;
-        num += (line[i] - '0');
-        i++;
-    }
-    return num;
-}
+    int initialState;
+    vector<int> finalStates;
+    vector<vector<int>> transition_table;
 
-class Moore{
-	int initialState;
-	vector<int> finalStates;
-	vector<vector<int>> transition_table;
 public:
-	void read_dfa(string file_name){
-    ifstream file;
-    string line;
-    file.open(file_name);
-    int i = 0;
-
-    while (getline(file, line))
+    void read_dfa(string file_name)
     {
-        if (i == 0)
+        ifstream file;
+        string line;
+        file.open(file_name);
+        int i = 0;
+
+        while (getline(file, line))
         {
-            initialState = stringToInt(line);
-        }
-        else if (i == 1)
-        {
-            int x = 0;
-            string num = "";
-            while (line[x] != 0)
+            if (i == 0)
             {
-                if (line[x] == ' ')
-                {
-                    finalStates.push_back(stringToInt(num));
-                    num = "";
-                    x++;
-                    continue;
-                }
-                num += line[x++];
+                initialState = stoi(line);
+                cout<<initialState;
             }
-            finalStates.push_back(stringToInt(num));
-        }
-        else
-        {
-            vector<int> temp;
-            int x = 0;
-            string num = "";
-            while (line[x] != 0)
+            else if (i == 1)
             {
-                if (line[x] == ' ')
+                int x = 0;
+                string num = "";
+                while (line[x] != 0)
                 {
-                    temp.push_back(stringToInt(num));
-                    num = "";
-                    x++;
-                    continue;
+                    if (line[x] == ' ')
+                    {
+                        finalStates.push_back(stoi(num));
+                        num = "";
+                        x++;
+                        continue;
+                    }
+                    num += line[x++];
                 }
-                num += line[x++];
+                finalStates.push_back(stoi(num));
             }
-            temp.push_back(stringToInt(num));
-            transition_table.push_back(temp);
+            else
+            {
+                vector<int> temp;
+                int x = 0;
+                string num = "";
+                while (line[x] != 0)
+                {
+                    if (line[x] == ' ')
+                    {
+                        temp.push_back(stoi(num));
+                        num = "";
+                        x++;
+                        continue;
+                    }
+                    num += line[x++];
+                }
+                temp.push_back(stoi(num));
+                transition_table.push_back(temp);
+            }
+            i++;
         }
-        i++;
-    }
-    file.close();
-	}
-
-	bool test(string s){
-	int curr = initialState;
-    int size = s.size(), k = 0;
-    if(s==""){
-    	for(auto fs : finalStates){
-    		if(fs==0) return true;
-    	}
-    	return false;
-    }
-    while (curr != -1 && k < size)
-    {
-    	cout<<curr<<"->";
-        string t = "";
-        t += s[k++];
-        curr = transition_table[curr][stringToInt(t)];
+        file.close();
     }
 
-    for (int i = 0; i < finalStates.size(); i++)
+    bool test(string s)
     {
-        if (curr == finalStates[i])
+        int curr = initialState;
+        int size = s.size(), k = 0;
+        if (s == "")
         {
-            return true;
+            for (auto fs : finalStates)
+            {
+                if (fs == 0)
+                    return true;
+            }
+            return false;
         }
+        while (curr != -1 && k < size)
+        {
+            cout << curr << "->";
+            string t = "";
+            t += s[k++];
+            curr = transition_table[curr][stoi(t)];
+        }
+
+        for (int i = 0; i < finalStates.size(); i++)
+        {
+            if (curr == finalStates[i])
+            {
+                return true;
+            }
+        }
+        return false;
     }
-    return false;		
-	}
 
-	void print(){
-		cout<<"Initial State: "<<initialState;
-		cout<<"\nFinal States: ";
-		for(auto fs : finalStates){
-			cout<<fs<<", ";
-		}
-		cout<<endl;
-	}
-
+    void print()
+    {
+        cout << "Initial State: " << initialState;
+        cout << "\nFinal States: ";
+        for (auto fs : finalStates)
+        {
+            cout << fs << ", ";
+        }
+        cout << endl;
+    }
 };
-
-
 
 int main()
 {
 
-    Moore dfa;
+    DFA dfa;
     dfa.read_dfa("dfa.txt");
     dfa.print();
     string inp;
-    while(true){
-    	cout<<"Enter input: ";
-    	getline(cin, inp); 
-    	if(inp=="exit") return 0;   	
-    	if(dfa.test(inp)){
-    		cout<<"Accepted :)\n";
-    	}else{
-    		cout<<"Rejected :(\n";
-    	}
+    while (true)
+    {
+        cout << "Enter input: ";
+        getline(cin, inp);
+        if (inp == "exit")
+            return 0;
+        if (dfa.test(inp))
+        {
+            cout << "Accepted :)\n";
+        }
+        else
+        {
+            cout << "Rejected :(\n";
+        }
     }
 
-    
     return 0;
 }

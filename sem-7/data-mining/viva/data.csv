@@ -1,0 +1,21 @@
+empid,department,job role,overtime,performance,attrition,job satisfaction
+1,Finance,Finance,Yes,Bad,No,Neutral
+2,Marketing,Operations,Yes,Bad,Yes,Very Satisfied
+3,HR,HR,No,Bad,No,Neutral
+4,Marketing,Finance,Yes,Bad,Yes,Satisfied
+5,Marketing,Finance,No,Good,Yes,Dissatisfied
+6,Finance,Operations,No,Excellent,No,Very Satisfied
+7,HR,Marketing,No,Bad,Yes,Satisfied
+8,HR,HR,No,Bad,Yes,Dissatisfied
+9,HR,Finance,Yes,Excellent,No,Dissatisfied
+10,HR,Operations,No,Bad,Yes,Neutral
+11,IT,Marketing,Yes,Excellent,Yes,Neutral
+12,Finance,Finance,Yes,Good,Yes,Satisfied
+13,HR,HR,Yes,Good,Yes,Neutral
+14,IT,Operations,Yes,Excellent,No,Satisfied
+15,HR,Finance,No,Excellent,No,Satisfied
+16,HR,Marketing,No,Good,Yes,Satisfied
+17,Finance,Finance,Yes,Bad,Yes,Very Satisfied
+18,Finance,HR,Yes,Good,No,Very Satisfied
+19,Marketing,Marketing,No,Good,Yes,Dissatisfied
+20,Marketing,Marketing,No,Good,No,Satisfied
